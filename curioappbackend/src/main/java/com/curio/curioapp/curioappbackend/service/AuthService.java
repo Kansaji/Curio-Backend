@@ -12,6 +12,7 @@ import com.curio.curioapp.curioappbackend.dto.LoginRequest;
 import com.curio.curioapp.curioappbackend.dto.RegisterRequest;
 import com.curio.curioapp.curioappbackend.model.User;
 import com.curio.curioapp.curioappbackend.repository.UserRepository;
+import com.curio.curioapp.curioappbackend.security.JwtProvider;
 
 @Service
 public class AuthService {
@@ -22,6 +23,8 @@ public class AuthService {
 	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private AuthenticationManager authenticationManager;
+	@Autowired
+	private JwtProvider jwtProvider;
 	
 	public void signup(RegisterRequest registerRequest) {
 		User user = new User();
@@ -32,9 +35,10 @@ public class AuthService {
 		userRepository.save(user);
 	}
 	
-	public void login(LoginRequest loginRequest) {
+	public String login(LoginRequest loginRequest) {
 		Authentication authenticate=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authenticate);
+		return jwtProvider.generateToken(authenticate);
 	}
 	
 	//password encoder

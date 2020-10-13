@@ -26,7 +26,7 @@ public class User {
 	private String email;
 	@Column(name = "telephone")
 	private String telephone;
-	@OneToMany(mappedBy = "PostedUser")
+	@OneToMany(mappedBy = "postedUser")
 	private List<Item> postedItems = new ArrayList<>();
 	@OneToMany(mappedBy = "boughtUser")
 	private List<Item> boughtItems = new ArrayList<>();

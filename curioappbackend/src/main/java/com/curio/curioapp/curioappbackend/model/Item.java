@@ -30,7 +30,7 @@ public class Item {
 	@Column(name = "photo", length = 1000)
 	private byte[] photo;
 	@ManyToOne
-	private User PostedUser;
+	private User postedUser;
 	@Column(name = "postedTimeStamp")
 	private Instant postedTimeStamp;
 	@ManyToOne
@@ -75,10 +75,10 @@ public class Item {
 		this.photo = photo;
 	}
 	public User getPostedUser() {
-		return PostedUser;
+		return postedUser;
 	}
 	public void setPostedUser(User postedUser) {
-		PostedUser = postedUser;
+		this.postedUser = postedUser;
 	}
 	public Instant getPostedTimeStamp() {
 		return postedTimeStamp;

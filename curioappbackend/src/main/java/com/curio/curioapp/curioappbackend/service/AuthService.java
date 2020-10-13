@@ -1,5 +1,7 @@
 package com.curio.curioapp.curioappbackend.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,5 +46,11 @@ public class AuthService {
 	//password encoder
 	private String encodePassword(String password) {
 		return passwordEncoder.encode(password);
+	}
+	
+	public Optional<org.springframework.security.core.userdetails.User> getCurrentUser() {
+		org.springframework.security.core.userdetails.User principle = (org.springframework.security.core.userdetails.User)
+		SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return Optional.of(principle);
 	}
 }

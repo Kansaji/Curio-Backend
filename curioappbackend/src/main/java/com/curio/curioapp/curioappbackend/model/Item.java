@@ -6,9 +6,11 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -43,6 +45,8 @@ public class Item {
 	private Gear gear;
 	@OneToMany(mappedBy = "inquiredItem")
 	private List<Inquiry>inquiries = new ArrayList<>();
+	@ManyToMany(mappedBy="inquiredItems",fetch=FetchType.LAZY)
+	private List<User> inquiredUsers = new ArrayList<>();
 	
 	public long getItemId() {
 		return itemId;
@@ -115,6 +119,12 @@ public class Item {
 	}
 	public void setInquiries(List<Inquiry> inquiries) {
 		this.inquiries = inquiries;
+	}
+	public List<User> getInquiredUsers() {
+		return inquiredUsers;
+	}
+	public void setInquiredUsers(List<User> inquiredUsers) {
+		this.inquiredUsers = inquiredUsers;
 	}
 	
 	

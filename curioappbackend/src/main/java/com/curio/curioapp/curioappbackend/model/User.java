@@ -5,11 +5,15 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.JoinColumn;
 
 @Entity
 @Table
@@ -36,6 +40,14 @@ public class User {
 	private List<Inquiry> sentInquiries = new ArrayList<>();
 	@OneToMany(mappedBy = "receivedBy")
 	private List<Inquiry> receivededInquiries = new ArrayList<>();
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(
+			name="InquiredItems",
+			joinColumns= {@JoinColumn(name="userid")},
+			inverseJoinColumns= {@JoinColumn(name="itemid")}
+			)
+			
+	private List<Item> inquiredItems = new ArrayList<>();
 	
 	public long getUserId() {
 		return userId;
@@ -96,6 +108,12 @@ public class User {
 	}
 	public void setReceivededInquiries(List<Inquiry> receivededInquiries) {
 		this.receivededInquiries = receivededInquiries;
+	}
+	public List<Item> getInquiredItems() {
+		return inquiredItems;
+	}
+	public void setInquiredItems(List<Item> inquiredItems) {
+		this.inquiredItems = inquiredItems;
 	}
 	
 	

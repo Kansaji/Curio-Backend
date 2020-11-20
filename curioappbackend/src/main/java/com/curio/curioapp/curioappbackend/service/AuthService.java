@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.curio.curioapp.curioappbackend.dto.AuthenticationResponse;
 import com.curio.curioapp.curioappbackend.dto.LoginRequest;
 import com.curio.curioapp.curioappbackend.dto.RegisterRequest;
 import com.curio.curioapp.curioappbackend.model.User;
@@ -28,19 +29,27 @@ public class AuthService {
 	@Autowired
 	private JwtProvider jwtProvider;
 	
-	public void signup(RegisterRequest registerRequest) {
-		User user = new User();
-		user.setUsername(registerRequest.getUsername());
-		user.setPassword(encodePassword(registerRequest.getPassword()));
-		user.setEmail(registerRequest.getEmail());
-		user.setTelephone(registerRequest.getTelephone());
-		userRepository.save(user);
+	public boolean signup(RegisterRequest registerRequest) {
+		
+		Optional<User> tempUser=userRepository.findByUsername(registerRequest.getUsername());
+		if(tempUser.isPresent() && tempUser.get().getUsername().equals(registerRequest.getUsername())) {
+			return false;
+		}else {
+			User user = new User();
+			user.setUsername(registerRequest.getUsername());
+			user.setPassword(encodePassword(registerRequest.getPassword()));
+			user.setEmail(registerRequest.getEmail());
+			user.setTelephone(registerRequest.getTelephone());
+			userRepository.save(user);
+			return true;
+		}
 	}
 	
-	public String login(LoginRequest loginRequest) {
+	public AuthenticationResponse login(LoginRequest loginRequest) {
 		Authentication authenticate=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authenticate);
-		return jwtProvider.generateToken(authenticate);
+		String authenticationToken = jwtProvider.generateToken(authenticate);
+		return new AuthenticationResponse(authenticationToken, loginRequest.getUsername());
 	}
 	
 	//password encoder

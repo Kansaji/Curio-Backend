@@ -23,9 +23,9 @@ public class ItemController {
 	private ItemService itemService;
 	
 	@PostMapping
-	public ResponseEntity postItem(@RequestBody ItemDto itemDto) {
+	public ResponseEntity<?> postItem(@RequestBody ItemDto itemDto) {
 		itemService.postItem(itemDto);
-		return new ResponseEntity(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 		
 	}
 	
@@ -40,14 +40,14 @@ public class ItemController {
 	}
 	
 	@PostMapping("/addtoinquireditems")
-	public ResponseEntity addToInquiredItems(@RequestBody AddToInquiredItemsRequest addToInquiredItemsRequest) {
+	public ResponseEntity<?> addToInquiredItems(@RequestBody AddToInquiredItemsRequest addToInquiredItemsRequest) {
 		
 		boolean added=itemService.addToInquiredItems(addToInquiredItemsRequest);
 		if(added) {
-			return new ResponseEntity(HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		else {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
 	}

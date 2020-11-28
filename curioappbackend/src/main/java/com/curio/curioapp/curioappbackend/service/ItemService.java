@@ -1,6 +1,7 @@
 package com.curio.curioapp.curioappbackend.service;
 
 import java.time.Instant;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +38,8 @@ public class ItemService {
 			item.setType(itemDto.getType());
 			item.setPostedTimeStamp(Instant.now());
 			item.setDescription(itemDto.getDescription());
+			byte[] decodedByte = Base64.getEncoder().encode(itemDto.getPhoto().getBytes());
+			item.setPhoto(decodedByte);
 			Optional<com.curio.curioapp.curioappbackend.model.User> optionalUser = userRepository.findByUsername(username.getUsername());
 			com.curio.curioapp.curioappbackend.model.User user= optionalUser.get(); 
 			item.setPostedUser(user);
@@ -115,6 +118,8 @@ public class ItemService {
 		itemDto.setItemName(item.getItemName());
 		itemDto.setType(item.getType());
 		itemDto.setDescription(item.getDescription());
+		byte[] decoded = Base64.getDecoder().decode(item.getPhoto());
+		itemDto.setPhoto(new String(decoded));
 		return itemDto;
 	}
 

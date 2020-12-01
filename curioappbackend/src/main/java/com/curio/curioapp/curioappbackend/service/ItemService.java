@@ -1,6 +1,7 @@
 package com.curio.curioapp.curioappbackend.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +54,22 @@ public class ItemService {
 	
 	public List<ItemDto> showAllItems(){
 		List<Item> items = itemRepository.findAll();
-		return items.stream().map(this::mapFromItemToDto).collect(Collectors.toList());
+		List<Item> sendingItemList = new ArrayList<>();
+
+
+		User username = authservice.getCurrentUser().orElseThrow(()->
+		new IllegalArgumentException("No user logged in"));
+
+		if(username!=null) {
+			Optional<com.curio.curioapp.curioappbackend.model.User> optionalUser = userRepository.findByUsername(username.getUsername());
+			com.curio.curioapp.curioappbackend.model.User user= optionalUser.get();
+		for(Item i:items) {
+			if(!user.getInquiredItems().contains(i) && !i.getPostedUser().equals(user)) {
+				sendingItemList.add(i);
+			}
+		}
+		}
+		return sendingItemList.stream().map(this::mapFromItemToDto).collect(Collectors.toList());
 	}
 	
 	public List<ItemDto> showMyItems(){

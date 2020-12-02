@@ -1,6 +1,6 @@
 package com.curio.curioapp.curioappbackend.model;
 
-import java.time.Instant;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +20,7 @@ public class Inquiry {
 	@Column(name = "messageContent")
 	private String messageContent;
 	@Column(name = "inquiredTimeStamp")
-	private Instant inquiredTimeStamp;
+	private String inquiredTimeStamp;
 	@ManyToOne
 	private Item inquiredItem;
 	@ManyToOne
@@ -40,10 +40,10 @@ public class Inquiry {
 	public void setMessageContent(String messageContent) {
 		this.messageContent = messageContent;
 	}
-	public Instant getInquiredTimeStamp() {
+	public String getInquiredTimeStamp() {
 		return inquiredTimeStamp;
 	}
-	public void setInquiredTimeStamp(Instant inquiredTimeStamp) {
+	public void setInquiredTimeStamp(String inquiredTimeStamp) {
 		this.inquiredTimeStamp = inquiredTimeStamp;
 	}
 	public Item getInquiredItem() {

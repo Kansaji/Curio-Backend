@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.curio.curioapp.curioappbackend.dto.AddToInquiredItemsRequest;
+import com.curio.curioapp.curioappbackend.dto.InquiryRequest;
+import com.curio.curioapp.curioappbackend.dto.InquiryResponse;
 import com.curio.curioapp.curioappbackend.dto.ItemDto;
 import com.curio.curioapp.curioappbackend.service.ItemService;
 
@@ -56,5 +58,23 @@ public class ItemController {
 	@GetMapping("/mywishlist")
 	public ResponseEntity<List<ItemDto>> showMyWishlist(){
 		return new ResponseEntity<>(itemService.showMyWishlist(),HttpStatus.OK);
+	}
+	
+	@GetMapping("/getinquiries")
+	public ResponseEntity<List<InquiryResponse>> getInquiries(@RequestBody AddToInquiredItemsRequest item){
+		return new ResponseEntity<>(itemService.getInquiries(item),HttpStatus.OK);
+	}
+	
+	@PostMapping("/makeinquiry")
+	public ResponseEntity<?> makeInquiry(@RequestBody InquiryRequest inquiryRequest) {
+		
+		boolean made=itemService.makeInquiry(inquiryRequest);
+		if(made) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
 	}
 }

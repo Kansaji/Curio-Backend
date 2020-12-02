@@ -12,8 +12,12 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import com.curio.curioapp.curioappbackend.dto.AddToInquiredItemsRequest;
+import com.curio.curioapp.curioappbackend.dto.InquiryRequest;
+import com.curio.curioapp.curioappbackend.dto.InquiryResponse;
 import com.curio.curioapp.curioappbackend.dto.ItemDto;
+import com.curio.curioapp.curioappbackend.model.Inquiry;
 import com.curio.curioapp.curioappbackend.model.Item;
+import com.curio.curioapp.curioappbackend.repository.InquiryRepository;
 import com.curio.curioapp.curioappbackend.repository.ItemRepository;
 import com.curio.curioapp.curioappbackend.repository.UserRepository;
 @Service
@@ -25,6 +29,8 @@ public class ItemService {
 	private AuthService authservice;
 	@Autowired
 	private ItemRepository itemRepository;
+	@Autowired
+	private InquiryRepository inquiryRepository;
 	
 	
 	public void postItem(ItemDto itemDto) {
@@ -128,6 +134,60 @@ public class ItemService {
 		
 	}
 	
+	public List<InquiryResponse> getInquiries(AddToInquiredItemsRequest item){
+
+		List<Inquiry> sendingInquiries = new ArrayList<>();
+		User username = authservice.getCurrentUser().orElseThrow(()->
+		new IllegalArgumentException("No user logged in"));
+		if(username!=null) {
+			Optional<com.curio.curioapp.curioappbackend.model.User> optionalUser = userRepository.findByUsername(username.getUsername());
+			com.curio.curioapp.curioappbackend.model.User user= optionalUser.get();
+			
+			
+			Optional<Item> itemFound = itemRepository.findById(item.getItemId());
+			Item inquiredItem = itemFound.get();
+			if(inquiredItem!= null) {
+				List<Inquiry> inquiries = inquiryRepository.findByInquiredItem(inquiredItem);
+				for(Inquiry i: inquiries) {
+					if(i.getSentBy().equals(user) || i.getReceivedBy().equals(user)) {
+						sendingInquiries.add(i);
+					}
+				}
+			}
+		}
+		
+		
+		return sendingInquiries.stream().map(this::mapFromInquiryToDto).collect(Collectors.toList());
+		
+	}
+	
+	public boolean makeInquiry(InquiryRequest inquiryRequest) {
+	
+		boolean made=false;
+		User username = authservice.getCurrentUser().orElseThrow(()->
+		new IllegalArgumentException("No user logged in"));
+		if(username!=null) {
+			Optional<com.curio.curioapp.curioappbackend.model.User> optionalUser = userRepository.findByUsername(username.getUsername());
+			com.curio.curioapp.curioappbackend.model.User user= optionalUser.get();
+			
+			Optional<Item> itemFound = itemRepository.findById(inquiryRequest.getItemId());
+			Item inquiredItem = itemFound.get();
+			if(inquiredItem!=null) {
+				Inquiry inquiry=new Inquiry();
+				inquiry.setSentBy(user);
+				inquiry.setReceivedBy(inquiredItem.getPostedUser());
+				inquiry.setInquiredItem(inquiredItem);
+				inquiry.setMessageContent(inquiryRequest.getMessage());
+				inquiry.setInquiredTimeStamp(inquiryRequest.getTimeStamp());
+				inquiryRepository.save(inquiry);
+				made=true;
+			}
+			
+			
+		}
+		return made;
+	}
+	
 	private ItemDto mapFromItemToDto(Item item) {
 		ItemDto itemDto = new ItemDto();
 		itemDto.setItemId(item.getItemId());
@@ -137,6 +197,16 @@ public class ItemService {
 		byte[] decoded = Base64.getDecoder().decode(item.getPhoto());
 		itemDto.setPhoto(new String(decoded));
 		return itemDto;
+	}
+	
+	private InquiryResponse mapFromInquiryToDto(Inquiry inquiry) {
+		InquiryResponse inquiryResponse = new InquiryResponse();
+		inquiryResponse.setFrom(inquiry.getSentBy().getUsername());
+		inquiryResponse.setTo(inquiry.getReceivedBy().getUsername());
+		inquiryResponse.setItemId(inquiry.getInquiredItem().getItemId());
+		inquiryResponse.setMessage(inquiry.getMessageContent());
+		inquiryResponse.setInquireTimeStamp(inquiry.getInquiredTimeStamp());
+		return inquiryResponse;
 	}
 
 }

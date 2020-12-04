@@ -134,7 +134,7 @@ public class ItemService {
 		
 	}
 	
-	public List<InquiryResponse> getInquiries(AddToInquiredItemsRequest item){
+	public List<InquiryResponse> getInquiries(long itemId){
 
 		List<Inquiry> sendingInquiries = new ArrayList<>();
 		User username = authservice.getCurrentUser().orElseThrow(()->
@@ -144,7 +144,7 @@ public class ItemService {
 			com.curio.curioapp.curioappbackend.model.User user= optionalUser.get();
 			
 			
-			Optional<Item> itemFound = itemRepository.findById(item.getItemId());
+			Optional<Item> itemFound = itemRepository.findById(itemId);
 			Item inquiredItem = itemFound.get();
 			if(inquiredItem!= null) {
 				List<Inquiry> inquiries = inquiryRepository.findByInquiredItem(inquiredItem);
@@ -160,6 +160,7 @@ public class ItemService {
 		return sendingInquiries.stream().map(this::mapFromInquiryToDto).collect(Collectors.toList());
 		
 	}
+	
 	
 	public boolean makeInquiry(InquiryRequest inquiryRequest) {
 	
@@ -183,6 +184,37 @@ public class ItemService {
 				made=true;
 			}
 			
+			
+		}
+		return made;
+	}
+	
+	public boolean reply(InquiryRequest inquiryRequest) {
+		boolean made=false;
+		
+		User username = authservice.getCurrentUser().orElseThrow(()->
+		new IllegalArgumentException("No user logged in"));
+		if(username!=null) {
+			Optional<com.curio.curioapp.curioappbackend.model.User> optionalUser = userRepository.findByUsername(username.getUsername());
+			com.curio.curioapp.curioappbackend.model.User user= optionalUser.get();
+			
+			Optional<Item> itemFound = itemRepository.findById(inquiryRequest.getItemId());
+			Item inquiredItem = itemFound.get();
+			
+			Optional<com.curio.curioapp.curioappbackend.model.User> optionalToUser = userRepository.findByUsername(inquiryRequest.getTo());
+			com.curio.curioapp.curioappbackend.model.User toUser= optionalToUser.get();
+			if(inquiredItem!=null) {
+				Inquiry inquiry = new Inquiry();
+				inquiry.setInquiredItem(inquiredItem);
+				inquiry.setSentBy(user);
+				inquiry.setReceivedBy(toUser);
+				inquiry.setMessageContent(inquiryRequest.getMessage());
+				inquiry.setInquiredTimeStamp(inquiryRequest.getTimeStamp());
+				
+				inquiryRepository.save(inquiry);
+				made=true;
+				
+			}
 			
 		}
 		return made;

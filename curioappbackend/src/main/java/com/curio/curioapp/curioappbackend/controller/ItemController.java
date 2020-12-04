@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,15 +61,27 @@ public class ItemController {
 		return new ResponseEntity<>(itemService.showMyWishlist(),HttpStatus.OK);
 	}
 	
-	@GetMapping("/getinquiries")
-	public ResponseEntity<List<InquiryResponse>> getInquiries(@RequestBody AddToInquiredItemsRequest item){
-		return new ResponseEntity<>(itemService.getInquiries(item),HttpStatus.OK);
+	@GetMapping("/getinquiries/{itemId}")
+	public ResponseEntity<List<InquiryResponse>> getInquiries(@PathVariable long itemId){
+		return new ResponseEntity<>(itemService.getInquiries(itemId),HttpStatus.OK);
 	}
 	
 	@PostMapping("/makeinquiry")
 	public ResponseEntity<?> makeInquiry(@RequestBody InquiryRequest inquiryRequest) {
 		
 		boolean made=itemService.makeInquiry(inquiryRequest);
+		if(made) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+	}
+	@PostMapping("/reply")
+	public ResponseEntity<?> reply(@RequestBody InquiryRequest inquiryRequest) {
+		
+		boolean made=itemService.reply(inquiryRequest);
 		if(made) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}

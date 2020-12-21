@@ -1,6 +1,6 @@
 package com.curio.curioapp.curioappbackend.model;
 
-import java.time.Instant;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,11 +37,11 @@ public class Item {
 	@ManyToOne
 	private User postedUser;
 	@Column(name = "postedTimeStamp")
-	private Instant postedTimeStamp;
+	private String postedTimeStamp;
 	@ManyToOne
 	private User boughtUser;	
 	@Column(name = "soldFlag")
-	private int soldFlag;
+	private String soldFlag;
 	@OneToOne(mappedBy = "item")
 	private Toy toy;
 	@OneToOne(mappedBy = "item")
@@ -87,10 +87,10 @@ public class Item {
 	public void setPostedUser(User postedUser) {
 		this.postedUser = postedUser;
 	}
-	public Instant getPostedTimeStamp() {
+	public String getPostedTimeStamp() {
 		return postedTimeStamp;
 	}
-	public void setPostedTimeStamp(Instant postedTimeStamp) {
+	public void setPostedTimeStamp(String postedTimeStamp) {
 		this.postedTimeStamp = postedTimeStamp;
 	}
 	public User getBoughtUser() {
@@ -99,10 +99,10 @@ public class Item {
 	public void setBoughtUser(User boughtUser) {
 		this.boughtUser = boughtUser;
 	}
-	public int getSoldFlag() {
+	public String getSoldFlag() {
 		return soldFlag;
 	}
-	public void setSoldFlag(int soldFlag) {
+	public void setSoldFlag(String soldFlag) {
 		this.soldFlag = soldFlag;
 	}
 	public Toy getToy() {

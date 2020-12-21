@@ -1,6 +1,6 @@
 package com.curio.curioapp.curioappbackend.service;
 
-import java.time.Instant;
+
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -43,7 +43,7 @@ public class ItemService {
 			item.setItemId(itemDto.getItemId());
 			item.setItemName(itemDto.getItemName());
 			item.setType(itemDto.getType());
-			item.setPostedTimeStamp(Instant.now());
+			item.setPostedTimeStamp(itemDto.getPostedTimeStamp());
 			item.setDescription(itemDto.getDescription());
 			byte[] decodedByte = Base64.getEncoder().encode(itemDto.getPhoto().getBytes());
 			item.setPhoto(decodedByte);
@@ -109,7 +109,7 @@ public class ItemService {
 					addInquiredItem.setItemId(addToInquiredItemsRequest.getItemId());
 					addInquiredItem.setItemName(item.getItemName());
 					addInquiredItem.setType(item.getType());
-					addInquiredItem.setPostedTimeStamp(Instant.now());
+					addInquiredItem.setPostedTimeStamp(item.getPostedTimeStamp());
 					addInquiredItem.setDescription(item.getDescription());
 					user.getInquiredItems().add(item);
 					userRepository.save(user);
@@ -214,11 +214,30 @@ public class ItemService {
 				inquiryRepository.save(inquiry);
 				made=true;
 				
+				
 			}
 			
 		}
 		return made;
 	}
+	
+	 public Boolean removeFromWishlist(long itemId) {
+		 boolean removed=false;
+		 com.curio.curioapp.curioappbackend.model.User user= getCurrentlyloggedInUser();
+		 Optional<Item> itemFound = itemRepository.findById(itemId);
+		 Item item = itemFound.get();
+		 if(item!=null) {
+			 if(user.getInquiredItems().contains(item)) {
+				 List<Item> inquiredItems=user.getInquiredItems();
+				 removed = user.getInquiredItems().remove(item);
+				 user.setInquiredItems(inquiredItems);
+				 userRepository.save(user);
+				 
+			 }
+		 }
+		 
+		 return removed;
+	 }
 	
 	private ItemDto mapFromItemToDto(Item item) {
 		ItemDto itemDto = new ItemDto();
@@ -226,6 +245,8 @@ public class ItemService {
 		itemDto.setItemName(item.getItemName());
 		itemDto.setType(item.getType());
 		itemDto.setDescription(item.getDescription());
+		itemDto.setPostedTimeStamp(item.getPostedTimeStamp());
+		itemDto.setSoldFlag(item.getSoldFlag());
 		byte[] decoded = Base64.getDecoder().decode(item.getPhoto());
 		itemDto.setPhoto(new String(decoded));
 		return itemDto;
@@ -241,4 +262,14 @@ public class ItemService {
 		return inquiryResponse;
 	}
 
+	private com.curio.curioapp.curioappbackend.model.User getCurrentlyloggedInUser() {
+		com.curio.curioapp.curioappbackend.model.User user=null;
+		User username = authservice.getCurrentUser().orElseThrow(()->
+		new IllegalArgumentException("No user logged in"));
+		if(username!=null) {
+			Optional<com.curio.curioapp.curioappbackend.model.User> optionalUser = userRepository.findByUsername(username.getUsername());
+			user= optionalUser.get();
+		}
+		return user;
+	}
 }

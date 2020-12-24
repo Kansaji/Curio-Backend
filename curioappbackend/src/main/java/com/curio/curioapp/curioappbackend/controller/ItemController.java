@@ -9,11 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.curio.curioapp.curioappbackend.dto.AddToInquiredItemsRequest;
+import com.curio.curioapp.curioappbackend.dto.CoordinatesDto;
 import com.curio.curioapp.curioappbackend.dto.InquiryRequest;
 import com.curio.curioapp.curioappbackend.dto.InquiryResponse;
 import com.curio.curioapp.curioappbackend.dto.ItemDto;
@@ -33,9 +35,9 @@ public class ItemController {
 		
 	}
 	
-	@GetMapping("/all")
-	public ResponseEntity<List<ItemDto>> showAllItems(){
-		return new ResponseEntity<>(itemService.showAllItems(),HttpStatus.OK);
+	@GetMapping("/all/{distanceValue}")
+	public ResponseEntity<List<ItemDto>> showAllItems(@PathVariable int distanceValue){
+		return new ResponseEntity<>(itemService.showAllItems(distanceValue),HttpStatus.OK);
 	}
 	
 	@GetMapping("/myitems")
@@ -100,5 +102,15 @@ public class ItemController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
+	}
+	@PutMapping("/updatecurrentgeolocation")
+	public ResponseEntity<?> updateCurrentGeolocation(@RequestBody CoordinatesDto coordinatesDto){
+		boolean updated=itemService.updateCurrentGeolocation(coordinatesDto);
+		if(updated) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+		}
 	}
 }

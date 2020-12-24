@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import com.curio.curioapp.curioappbackend.dto.AddToInquiredItemsRequest;
+import com.curio.curioapp.curioappbackend.dto.CoordinatesDto;
 import com.curio.curioapp.curioappbackend.dto.InquiryRequest;
 import com.curio.curioapp.curioappbackend.dto.InquiryResponse;
 import com.curio.curioapp.curioappbackend.dto.ItemDto;
@@ -58,10 +59,11 @@ public class ItemService {
 		
 	}
 	
-	public List<ItemDto> showAllItems(){
+	public List<ItemDto> showAllItems(int distanceValue){
 		List<Item> items = itemRepository.findAll();
 		List<Item> sendingItemList = new ArrayList<>();
-
+		System.out.println(distanceValue);
+		double d=0;
 
 		User username = authservice.getCurrentUser().orElseThrow(()->
 		new IllegalArgumentException("No user logged in"));
@@ -69,11 +71,28 @@ public class ItemService {
 		if(username!=null) {
 			Optional<com.curio.curioapp.curioappbackend.model.User> optionalUser = userRepository.findByUsername(username.getUsername());
 			com.curio.curioapp.curioappbackend.model.User user= optionalUser.get();
-		for(Item i:items) {
-			if(!user.getInquiredItems().contains(i) && !i.getPostedUser().equals(user)) {
-				sendingItemList.add(i);
+			if(distanceValue>=100) {
+				for(Item i:items) {
+					if(!user.getInquiredItems().contains(i) && !i.getPostedUser().equals(user)) {
+						sendingItemList.add(i);
+					}
+				}
+			}else if(distanceValue<100) {
+				for(Item i:items) {
+					double longitudeC=user.getLongitude();
+					double latitudeC=user.getLatitude();
+					double longitudeP=i.getPostedUser().getLongitude();
+					double latitudeP=i.getPostedUser().getLatitude();
+					
+					 d=distance(longitudeC,latitudeC,longitudeP,latitudeP);
+					System.out.println(d);
+				
+					if(!user.getInquiredItems().contains(i) && !i.getPostedUser().equals(user) &&  d <= distanceValue) {
+						sendingItemList.add(i);
+					}
+				}
+		
 			}
-		}
 		}
 		return sendingItemList.stream().map(this::mapFromItemToDto).collect(Collectors.toList());
 	}
@@ -223,7 +242,7 @@ public class ItemService {
 	
 	 public Boolean removeFromWishlist(long itemId) {
 		 boolean removed=false;
-		 com.curio.curioapp.curioappbackend.model.User user= getCurrentlyloggedInUser();
+		 com.curio.curioapp.curioappbackend.model.User user= getCurrentlyLoggedInUser();
 		 Optional<Item> itemFound = itemRepository.findById(itemId);
 		 Item item = itemFound.get();
 		 if(item!=null) {
@@ -238,6 +257,19 @@ public class ItemService {
 		 
 		 return removed;
 	 }
+	 
+	 public boolean updateCurrentGeolocation(CoordinatesDto coordinatesDto) {
+		 com.curio.curioapp.curioappbackend.model.User user=getCurrentlyLoggedInUser();
+		 boolean updated=false;
+		 if(user!=null) {
+			 user.setLongitude(coordinatesDto.getLongitude());
+			 user.setLatitude(coordinatesDto.getLatitude());
+			 userRepository.save(user);
+			 updated=true;			 
+		 }
+		 return updated;
+	 }
+	 
 	
 	private ItemDto mapFromItemToDto(Item item) {
 		ItemDto itemDto = new ItemDto();
@@ -249,6 +281,16 @@ public class ItemService {
 		itemDto.setSoldFlag(item.getSoldFlag());
 		byte[] decoded = Base64.getDecoder().decode(item.getPhoto());
 		itemDto.setPhoto(new String(decoded));
+		itemDto.setPostedUser(item.getPostedUser().getUsername());
+		
+		com.curio.curioapp.curioappbackend.model.User user=getCurrentlyLoggedInUser();
+		double longitudeC=user.getLongitude();
+		double latitudeC=user.getLatitude();
+		double longitudeP=item.getPostedUser().getLongitude();
+		double latitudeP=item.getPostedUser().getLatitude();
+		
+		double d=distance(longitudeC,latitudeC,longitudeP,latitudeP);
+		itemDto.setAway(d);
 		return itemDto;
 	}
 	
@@ -262,7 +304,7 @@ public class ItemService {
 		return inquiryResponse;
 	}
 
-	private com.curio.curioapp.curioappbackend.model.User getCurrentlyloggedInUser() {
+	private com.curio.curioapp.curioappbackend.model.User getCurrentlyLoggedInUser() {
 		com.curio.curioapp.curioappbackend.model.User user=null;
 		User username = authservice.getCurrentUser().orElseThrow(()->
 		new IllegalArgumentException("No user logged in"));
@@ -271,5 +313,22 @@ public class ItemService {
 			user= optionalUser.get();
 		}
 		return user;
+	}
+	
+	private double distance(double longitudeC, double latitudeC, double longitudeP, double latitudeP) {
+		longitudeC=Math.toRadians(longitudeC);
+		latitudeC=Math.toRadians(latitudeC);
+		longitudeP=Math.toRadians(longitudeP);
+		latitudeP=Math.toRadians(latitudeP);
+		
+		double dLongitude=longitudeP-longitudeC;
+		double dLatitude=latitudeP-latitudeC;
+		
+		double a=Math.pow(Math.sin(dLatitude/2),2)+Math.cos(latitudeC)*Math.cos(latitudeP)*Math.pow(Math.sin(dLongitude/2),2 );
+		double c=2*Math.asin(Math.sqrt(a));
+		double r=6371;
+		return (c*r);
+		
+		
 	}
 }

@@ -28,8 +28,8 @@ public class User {
 	private String password;
 	@Column(name = "email")
 	private String email;
-	@Column(name = "telephone")
-	private String telephone;
+	@Column(name = "city")
+	private String city;
 	@OneToMany(mappedBy = "postedUser")
 	private List<Item> postedItems = new ArrayList<>();
 	@OneToMany(mappedBy = "boughtUser")
@@ -46,8 +46,11 @@ public class User {
 			joinColumns= {@JoinColumn(name="userid")},
 			inverseJoinColumns= {@JoinColumn(name="itemid")}
 			)
-			
 	private List<Item> inquiredItems = new ArrayList<>();
+	@Column(name = "longitude")
+	private double longitude;
+	@Column(name = "latitude")
+	private double latitude;
 	
 	public long getUserId() {
 		return userId;
@@ -73,11 +76,11 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getTelephone() {
-		return telephone;
+	public String getCity() {
+		return city;
 	}
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
+	public void setCity(String city) {
+		this.city = city;
 	}
 	public List<Item> getPostedItems() {
 		return postedItems;
@@ -114,6 +117,18 @@ public class User {
 	}
 	public void setInquiredItems(List<Item> inquiredItems) {
 		this.inquiredItems = inquiredItems;
+	}
+	public double getLongitude() {
+		return longitude;
+	}
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+	public double getLatitude() {
+		return latitude;
+	}
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
 	}
 	
 	

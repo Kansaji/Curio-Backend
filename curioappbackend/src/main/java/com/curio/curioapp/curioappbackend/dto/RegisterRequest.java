@@ -4,7 +4,7 @@ public class RegisterRequest {
 	private String username;
 	private String password;
 	private String email;
-	private String telephone;
+	private String city;
 	
 	public String getUsername() {
 		return username;
@@ -24,11 +24,11 @@ public class RegisterRequest {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getTelephone() {
-		return telephone;
+	public String getCity() {
+		return city;
 	}
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
+	public void setCity(String city) {
+		this.city = city;
 	}
 	
 }

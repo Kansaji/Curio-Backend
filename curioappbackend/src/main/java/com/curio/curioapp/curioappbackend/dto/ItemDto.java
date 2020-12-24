@@ -10,6 +10,8 @@ public class ItemDto {
 	private String soldFlag;
 	private String photo;
 	private String postedTimeStamp;
+	private String postedUser;
+	private double away;
 	
 	public long getItemId() {
 		return itemId;
@@ -53,6 +55,18 @@ public class ItemDto {
 	}
 	public void setPostedTimeStamp(String postedTimeStamp) {
 		this.postedTimeStamp = postedTimeStamp;
+	}
+	public String getPostedUser() {
+		return postedUser;
+	}
+	public void setPostedUser(String postedUser) {
+		this.postedUser = postedUser;
+	}
+	public double getAway() {
+		return away;
+	}
+	public void setAway(double away) {
+		this.away = away;
 	}
 	
 	

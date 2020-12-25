@@ -19,6 +19,7 @@ import com.curio.curioapp.curioappbackend.dto.CoordinatesDto;
 import com.curio.curioapp.curioappbackend.dto.InquiryRequest;
 import com.curio.curioapp.curioappbackend.dto.InquiryResponse;
 import com.curio.curioapp.curioappbackend.dto.ItemDto;
+import com.curio.curioapp.curioappbackend.dto.StatsDto;
 import com.curio.curioapp.curioappbackend.service.ItemService;
 
 @RestController
@@ -112,5 +113,10 @@ public class ItemController {
 		else {
 			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 		}
+	}
+	
+	@GetMapping("/getmystats")
+	public ResponseEntity<StatsDto> getMyStats(){
+		return new ResponseEntity<>(itemService.getMyStats(),HttpStatus.OK);
 	}
 }

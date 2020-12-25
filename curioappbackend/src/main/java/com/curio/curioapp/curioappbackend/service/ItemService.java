@@ -16,6 +16,7 @@ import com.curio.curioapp.curioappbackend.dto.CoordinatesDto;
 import com.curio.curioapp.curioappbackend.dto.InquiryRequest;
 import com.curio.curioapp.curioappbackend.dto.InquiryResponse;
 import com.curio.curioapp.curioappbackend.dto.ItemDto;
+import com.curio.curioapp.curioappbackend.dto.StatsDto;
 import com.curio.curioapp.curioappbackend.model.Inquiry;
 import com.curio.curioapp.curioappbackend.model.Item;
 import com.curio.curioapp.curioappbackend.repository.InquiryRepository;
@@ -71,7 +72,15 @@ public class ItemService {
 		if(username!=null) {
 			Optional<com.curio.curioapp.curioappbackend.model.User> optionalUser = userRepository.findByUsername(username.getUsername());
 			com.curio.curioapp.curioappbackend.model.User user= optionalUser.get();
-			if(distanceValue>=100) {
+			
+			if((user.getLatitude()==0 || user.getLongitude()==0) && distanceValue < 100) {
+				for(Item i:items) {
+					if((!user.getInquiredItems().contains(i) && !i.getPostedUser().equals(user))) {
+						sendingItemList.add(i);
+					}
+				}
+			}
+			else if(distanceValue>=100) {
 				for(Item i:items) {
 					if(!user.getInquiredItems().contains(i) && !i.getPostedUser().equals(user)) {
 						sendingItemList.add(i);
@@ -84,7 +93,7 @@ public class ItemService {
 					double longitudeP=i.getPostedUser().getLongitude();
 					double latitudeP=i.getPostedUser().getLatitude();
 					
-					 d=distance(longitudeC,latitudeC,longitudeP,latitudeP);
+					d=distance(longitudeC,latitudeC,longitudeP,latitudeP);
 					System.out.println(d);
 				
 					if(!user.getInquiredItems().contains(i) && !i.getPostedUser().equals(user) &&  d <= distanceValue) {
@@ -268,6 +277,19 @@ public class ItemService {
 			 updated=true;			 
 		 }
 		 return updated;
+	 }
+	 
+	 public StatsDto getMyStats() {
+		 StatsDto statsDto=null;
+		 com.curio.curioapp.curioappbackend.model.User user=getCurrentlyLoggedInUser();
+		 if(user!=null) {
+			 statsDto=new StatsDto();
+			 statsDto.setItemsPosted(user.getPostedItems().size());
+			 statsDto.setInquiriesMade(user.getSentInquiries().size());
+			 statsDto.setInquiriesReveived(user.getReceivededInquiries().size());
+			 statsDto.setItemsInWishlist(user.getInquiredItems().size());
+		 }
+		 return statsDto;
 	 }
 	 
 	

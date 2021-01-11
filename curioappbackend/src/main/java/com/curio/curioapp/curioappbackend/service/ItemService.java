@@ -63,6 +63,7 @@ public class ItemService {
 	public List<ItemDto> showAllItems(int distanceValue){
 		List<Item> items = itemRepository.findAll();
 		List<Item> sendingItemList = new ArrayList<>();
+		List<Item> sendToClient = new ArrayList<>();
 		System.out.println(distanceValue);
 		double d=0;
 
@@ -103,19 +104,31 @@ public class ItemService {
 		
 			}
 		}
-		return sendingItemList.stream().map(this::mapFromItemToDto).collect(Collectors.toList());
+		for(Item i:sendingItemList) {
+			if(!i.getType().equals("This items was removed")) {
+				sendToClient.add(i);
+			}
+		}
+		return sendToClient.stream().map(this::mapFromItemToDto).collect(Collectors.toList());
 	}
 	
 	public List<ItemDto> showMyItems(){
 		User username = authservice.getCurrentUser().orElseThrow(()->
 				new IllegalArgumentException("No user logged in"));
 		List<Item> myItems = null;
+		List<Item> sendingItemsList=new ArrayList<>();
+		
 		if(username!=null) {
 			Optional<com.curio.curioapp.curioappbackend.model.User> optionalUser = userRepository.findByUsername(username.getUsername());
 			com.curio.curioapp.curioappbackend.model.User user= optionalUser.get();
-		    myItems = itemRepository.findByPostedUser(user);	
+		    myItems = itemRepository.findByPostedUser(user);
+		    for(Item i:myItems) {
+		    	if(!i.getType().equals("This items was removed")) {
+		    		sendingItemsList.add(i);
+		    	}
+		    }
 		}		
-		return myItems.stream().map(this::mapFromItemToDto).collect(Collectors.toList());
+		return sendingItemsList.stream().map(this::mapFromItemToDto).collect(Collectors.toList());
 	}
 	
 	public boolean addToInquiredItems(AddToInquiredItemsRequest addToInquiredItemsRequest) {
@@ -267,6 +280,24 @@ public class ItemService {
 		 return removed;
 	 }
 	 
+	 public boolean removeFromMyItems(long itemId) {
+		 boolean removed=false;
+		 com.curio.curioapp.curioappbackend.model.User user= getCurrentlyLoggedInUser();
+		 Optional<Item> itemFound = itemRepository.findById(itemId);
+		 Item item = itemFound.get();
+		 if(item!=null && user!=null) {
+			 item.setItemName("");
+			 item.setDescription("");
+			 item.setPostedTimeStamp("");
+			 item.setType("This items was removed");
+			 
+			 
+			 itemRepository.save(item);
+			 removed=true;
+		 }
+		 return removed;
+	 }
+	 
 	 public boolean updateCurrentGeolocation(CoordinatesDto coordinatesDto) {
 		 com.curio.curioapp.curioappbackend.model.User user=getCurrentlyLoggedInUser();
 		 boolean updated=false;
@@ -313,6 +344,13 @@ public class ItemService {
 		
 		double d=distance(longitudeC,latitudeC,longitudeP,latitudeP);
 		itemDto.setAway(d);
+		
+		int inquiries= item.getInquiries().size();
+		int inquiredUsers=item.getInquiredUsers().size();
+		
+		itemDto.setInquiries(inquiries);
+		itemDto.setInquiredUsers(inquiredUsers);
+		
 		return itemDto;
 	}
 	
@@ -322,7 +360,7 @@ public class ItemService {
 		inquiryResponse.setTo(inquiry.getReceivedBy().getUsername());
 		inquiryResponse.setItemId(inquiry.getInquiredItem().getItemId());
 		inquiryResponse.setMessage(inquiry.getMessageContent());
-		inquiryResponse.setInquireTimeStamp(inquiry.getInquiredTimeStamp());
+		inquiryResponse.setTimeStamp(inquiry.getInquiredTimeStamp());
 		return inquiryResponse;
 	}
 

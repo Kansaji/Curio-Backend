@@ -1,6 +1,6 @@
 package com.curio.curioapp.curioappbackend.model;
 
-import java.time.Instant;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +20,8 @@ public class Question {
 	@Column(name = "questionId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long questionId;
+	@Column(name = "subject")
+	private String subject;
 	@Column(name = "questionContent")
 	private String questionContent;
 	@ManyToOne
@@ -27,7 +29,7 @@ public class Question {
 	@OneToMany(mappedBy = "question")
 	private List<Answer>answers = new ArrayList<>();
 	@Column(name = "questionedTimeStamp")
-	private Instant questionedTimeStamp;
+	private String questionedTimeStamp;
 	
 	public long getQuestionId() {
 		return questionId;
@@ -53,11 +55,17 @@ public class Question {
 	public void setAnswers(List<Answer> answers) {
 		this.answers = answers;
 	}
-	public Instant getQuestionedTimeStamp() {
+	public String getQuestionedTimeStamp() {
 		return questionedTimeStamp;
 	}
-	public void setQuestionedTimeStamp(Instant questionedTimeStamp) {
+	public void setQuestionedTimeStamp(String questionedTimeStamp) {
 		this.questionedTimeStamp = questionedTimeStamp;
+	}
+	public String getSubject() {
+		return subject;
+	}
+	public void setSubject(String subject) {
+		this.subject = subject;
 	}
 	
 	

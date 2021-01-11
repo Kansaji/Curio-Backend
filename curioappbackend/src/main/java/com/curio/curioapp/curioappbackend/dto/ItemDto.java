@@ -12,6 +12,8 @@ public class ItemDto {
 	private String postedTimeStamp;
 	private String postedUser;
 	private double away;
+	private int inquiredUsers;
+	private int inquiries;
 	
 	public long getItemId() {
 		return itemId;
@@ -67,6 +69,18 @@ public class ItemDto {
 	}
 	public void setAway(double away) {
 		this.away = away;
+	}
+	public int getInquiredUsers() {
+		return inquiredUsers;
+	}
+	public void setInquiredUsers(int inquiredUsers) {
+		this.inquiredUsers = inquiredUsers;
+	}
+	public int getInquiries() {
+		return inquiries;
+	}
+	public void setInquiries(int inquiries) {
+		this.inquiries = inquiries;
 	}
 	
 	

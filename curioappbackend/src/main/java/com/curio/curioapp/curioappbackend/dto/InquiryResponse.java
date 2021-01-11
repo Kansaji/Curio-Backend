@@ -7,7 +7,7 @@ public class InquiryResponse {
 	private String to;
 	private long itemId;
 	private String message;
-	private String inquireTimeStamp;
+	private String timeStamp;
 	
 	public String getFrom() {
 		return from;
@@ -33,11 +33,11 @@ public class InquiryResponse {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public String getInquireTimeStamp() {
-		return inquireTimeStamp;
+	public String getTimeStamp() {
+		return timeStamp;
 	}
-	public void setInquireTimeStamp(String inquireTimeStamp) {
-		this.inquireTimeStamp = inquireTimeStamp;
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
 	}
 	
 	

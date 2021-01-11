@@ -93,6 +93,7 @@ public class ItemController {
 		}
 		
 	}
+	
 	@PostMapping("/removefromwishlist/{itemId}")
 	public ResponseEntity<?> removeFromWishlist(@PathVariable long itemId){
 		boolean removed=itemService.removeFromWishlist(itemId);
@@ -104,6 +105,19 @@ public class ItemController {
 		}
 		
 	}
+	
+	@PostMapping("/removefrommyitems/{itemId}")
+	public ResponseEntity<?> removeFromMyItems(@PathVariable long itemId){
+		boolean removed=itemService.removeFromMyItems(itemId);
+		if(removed) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+	}
+
 	@PutMapping("/updatecurrentgeolocation")
 	public ResponseEntity<?> updateCurrentGeolocation(@RequestBody CoordinatesDto coordinatesDto){
 		boolean updated=itemService.updateCurrentGeolocation(coordinatesDto);

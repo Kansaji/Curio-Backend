@@ -133,4 +133,19 @@ public class ItemController {
 	public ResponseEntity<StatsDto> getMyStats(){
 		return new ResponseEntity<>(itemService.getMyStats(),HttpStatus.OK);
 	}
+	
+	@GetMapping("/getitemsbyusername/{distanceValue}/{username}")
+	public ResponseEntity<List<ItemDto>> getItemsByUsername(@PathVariable int distanceValue, @PathVariable String username ) {
+		return new ResponseEntity<>(itemService.getItemsByUsername(distanceValue, username),HttpStatus.OK);
+	}
+	
+	@GetMapping("/getitemsbyitemtype/{distanceValue}/{type}")
+	public ResponseEntity<List<ItemDto>> getItemsByitemtype(@PathVariable int distanceValue, @PathVariable String type ) {
+		return new ResponseEntity<>(itemService.getItemsByType(distanceValue, type),HttpStatus.OK);
+	}
+	
+	@GetMapping("/getitemsbyitemname/{distanceValue}/{itemName}")
+	public ResponseEntity<List<ItemDto>> getItemsByitemname(@PathVariable int distanceValue, @PathVariable String itemName ) {
+		return new ResponseEntity<>(itemService.getItemsByItemName(distanceValue, itemName),HttpStatus.OK);
+	}
 }

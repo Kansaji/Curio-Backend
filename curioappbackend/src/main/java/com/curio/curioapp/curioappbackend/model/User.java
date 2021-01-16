@@ -51,6 +51,8 @@ public class User {
 	private double longitude;
 	@Column(name = "latitude")
 	private double latitude;
+	@OneToMany(mappedBy="answerReplyUser")
+	private List<AnswerReply>  answerReplies;
 	
 	public long getUserId() {
 		return userId;
@@ -129,6 +131,12 @@ public class User {
 	}
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
+	}
+	public List<AnswerReply> getAnswerReplies() {
+		return answerReplies;
+	}
+	public void setAnswerReplies(List<AnswerReply> answerReplies) {
+		this.answerReplies = answerReplies;
 	}
 	
 	

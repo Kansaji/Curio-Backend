@@ -9,6 +9,7 @@ public class QuestionDto {
 	private String questionContent;
 	private String questionedTimeStamp;
 	private String askedUsername;
+	private int numOfAnswers;
 	
 	public long getQuestionId() {
 		return questionId;
@@ -39,6 +40,12 @@ public class QuestionDto {
 	}
 	public void setSubject(String subject) {
 		this.subject = subject;
+	}
+	public int getNumOfAnswers() {
+		return numOfAnswers;
+	}
+	public void setNumOfAnswers(int numOfAnswers) {
+		this.numOfAnswers = numOfAnswers;
 	}
 	
 

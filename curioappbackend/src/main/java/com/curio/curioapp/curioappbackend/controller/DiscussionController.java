@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.curio.curioapp.curioappbackend.dto.AnswerDto;
+import com.curio.curioapp.curioappbackend.dto.AnswerReplyDto;
 import com.curio.curioapp.curioappbackend.dto.QuestionDto;
 import com.curio.curioapp.curioappbackend.service.DiscussionService;
 
@@ -58,9 +59,28 @@ public class DiscussionController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
+	
 	@GetMapping("/showanswers/{questionId}")
 	public ResponseEntity<List<AnswerDto>> showAnswers(@PathVariable long questionId) {
 		return new ResponseEntity<>(discussionService.showAnswers(questionId),HttpStatus.OK);	
+	}
+	
+	@PostMapping("/postanswerreply")
+	public ResponseEntity<?> postAnswerReply(@RequestBody AnswerReplyDto answerReplyDto) {
+		boolean posted=false;
+		
+		posted = discussionService.postAnswerReply(answerReplyDto);
+		if(posted) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/showanswerreplies/{answerId}")
+	public ResponseEntity<List<AnswerReplyDto>> showAnswerReplies(@PathVariable long answerId) {
+		return new ResponseEntity<>(discussionService.showAnswerReplies(answerId),HttpStatus.OK);	
 	}
 	
 }

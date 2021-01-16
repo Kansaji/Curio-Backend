@@ -10,6 +10,7 @@ public class AnswerDto {
 	private long questionId;
 	private String subject;
 	private String questionContent;
+	private int numOfReplies;
 	
 	public long getAnswerId() {
 		return answerId;
@@ -52,6 +53,12 @@ public class AnswerDto {
 	}
 	public void setSubject(String subject) {
 		this.subject = subject;
+	}
+	public int getNumOfReplies() {
+		return numOfReplies;
+	}
+	public void setNumOfReplies(int numOfReplies) {
+		this.numOfReplies = numOfReplies;
 	}
 	
 	

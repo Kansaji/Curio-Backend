@@ -11,11 +11,12 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import com.curio.curioapp.curioappbackend.dto.AnswerDto;
-
+import com.curio.curioapp.curioappbackend.dto.AnswerReplyDto;
 import com.curio.curioapp.curioappbackend.dto.QuestionDto;
 import com.curio.curioapp.curioappbackend.model.Answer;
-
+import com.curio.curioapp.curioappbackend.model.AnswerReply;
 import com.curio.curioapp.curioappbackend.model.Question;
+import com.curio.curioapp.curioappbackend.repository.AnswerReplyRepository;
 import com.curio.curioapp.curioappbackend.repository.AnswerRepository;
 import com.curio.curioapp.curioappbackend.repository.QuestionRepository;
 import com.curio.curioapp.curioappbackend.repository.UserRepository;
@@ -30,6 +31,8 @@ public class DiscussionService {
 	private UserRepository userRepository;
 	@Autowired
 	private AnswerRepository answerRepository;
+	@Autowired
+	private AnswerReplyRepository answerReplyRepository;
 	
 	public boolean postQuestion(QuestionDto questionDto) {
 		boolean posted=false;
@@ -106,14 +109,37 @@ public class DiscussionService {
 					dummy.setAnsweredUser(null);
 					dummy.setAnswerId(0);
 				
-					
-			
 				answers=answerRepository.findByQuestion(question);
 				answers.add(0,dummy);
 				System.out.println(answers.get(0).getQuestion().getQuestionContent());
 			}
 		}
 		return answers.stream().map(this::mapFromAnswerToDto).collect(Collectors.toList());
+	}
+	
+	public boolean postAnswerReply(AnswerReplyDto answerReplyDto) {
+		boolean posted=false;
+		com.curio.curioapp.curioappbackend.model.User user = getCurrentlyLoggedInUser();
+		if(user!=null) {
+			AnswerReply answerReply = new AnswerReply();
+			answerReply.setAnswer(answerRepository.findById(answerReplyDto.getAnswerId()).get());
+			answerReply.setAnswerReplyContent(answerReplyDto.getAnswerReplyContent());
+			answerReply.setAnswerReplyTimeStamp(answerReplyDto.getAnswerReplyTimeStamp());
+			answerReply.setAnswerReplyUser(user);
+			answerReplyRepository.save(answerReply);
+			posted=true;
+		}
+		return posted;
+	}
+	
+	public List<AnswerReplyDto> showAnswerReplies(long answerId){
+		com.curio.curioapp.curioappbackend.model.User user = getCurrentlyLoggedInUser();
+		List<AnswerReply> answerReplies=new ArrayList<>();
+		if(user!=null) {
+			answerReplies = answerReplyRepository.findByAnswer(answerRepository.findById(answerId).get());
+		
+		}
+		return answerReplies.stream().map(this::mapFromAnswerReplyToDto).collect(Collectors.toList());
 	}
 	
 	private QuestionDto mapFromQuestionToDto(Question question) {
@@ -123,13 +149,25 @@ public class DiscussionService {
 		questionDto.setQuestionContent(question.getQuestionContent());
 		questionDto.setQuestionedTimeStamp(question.getQuestionedTimeStamp());
 		questionDto.setAskedUsername(question.getQuestionedUser().getUsername());
+		questionDto.setNumOfAnswers(question.getAnswers().size());
 		System.out.println(questionDto.getSubject());
 		return questionDto;
+	}
+	
+	private AnswerReplyDto mapFromAnswerReplyToDto(AnswerReply answerReply) {
+		AnswerReplyDto answerReplyDto = new AnswerReplyDto();
+		answerReplyDto.setAnswerId(answerReply.getAnswer().getAnswerId());
+		answerReplyDto.setAnswerReplyContent(answerReply.getAnswerReplyContent());
+		answerReplyDto.setAnswerReplyId(answerReply.getAnswerReplyId());
+		answerReplyDto.setAnswerReplyTimeStamp(answerReply.getAnswerReplyTimeStamp());
+		answerReplyDto.setAnswerReplyUsername(answerReply.getAnswerReplyUser().getUsername());
+		return answerReplyDto;
 	}
 	
 	private AnswerDto mapFromAnswerToDto(Answer answer) {
 		AnswerDto answerDto = new AnswerDto();
 		answerDto.setAnswerId(answer.getAnswerId());
+		answerDto.setNumOfReplies(answer.getAsnwerReplies().size());
 		
 		answerDto.setAnswerContent(answer.getAnswerContent());
 		answerDto.setAnsweredTimeStamp(answer.getAnsweredTimeStamp());

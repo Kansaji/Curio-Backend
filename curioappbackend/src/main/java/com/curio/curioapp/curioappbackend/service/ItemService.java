@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
+
 import com.curio.curioapp.curioappbackend.dto.AddToInquiredItemsRequest;
 import com.curio.curioapp.curioappbackend.dto.CoordinatesDto;
 import com.curio.curioapp.curioappbackend.dto.InquiryRequest;
@@ -267,7 +268,7 @@ public class ItemService {
 		 com.curio.curioapp.curioappbackend.model.User user= getCurrentlyLoggedInUser();
 		 Optional<Item> itemFound = itemRepository.findById(itemId);
 		 Item item = itemFound.get();
-		 if(item!=null) {
+		 if(item!=null && user!=null) {
 			 if(user.getInquiredItems().contains(item)) {
 				 List<Item> inquiredItems=user.getInquiredItems();
 				 removed = user.getInquiredItems().remove(item);
@@ -296,6 +297,49 @@ public class ItemService {
 			 removed=true;
 		 }
 		 return removed;
+	 }
+	 
+	 public List<ItemDto> getItemsByUsername(int distanceValue, String username){
+		 com.curio.curioapp.curioappbackend.model.User user=getCurrentlyLoggedInUser();
+		 List<ItemDto> sendingItemList = new ArrayList<>();
+		 if(user!=null) {
+			 List<ItemDto> itemList=showAllItems(distanceValue);
+			 for(ItemDto i:itemList) {
+				 if(i.getPostedUser().equalsIgnoreCase(username) ){
+					 sendingItemList.add(i);
+				 }
+			 }
+		 }
+		 return sendingItemList;
+	 }
+	 
+	 public List<ItemDto> getItemsByType(int distanceValue, String type){
+		 com.curio.curioapp.curioappbackend.model.User user=getCurrentlyLoggedInUser();
+		 List<ItemDto> sendingItemList = new ArrayList<>();
+		 if(user!=null) {
+			 List<ItemDto> itemList=showAllItems(distanceValue);
+			 for(ItemDto i:itemList) {
+				 if(i.getType().equalsIgnoreCase(type)) {
+					 sendingItemList.add(i);
+				 }
+			 }
+		 }
+		 return sendingItemList;
+	 }
+	 
+	 public List<ItemDto> getItemsByItemName(int distanceValue, String itemName){
+		
+		 com.curio.curioapp.curioappbackend.model.User user=getCurrentlyLoggedInUser();
+		 List<ItemDto> sendingItemList = new ArrayList<>();
+		 if(user!=null) {
+			 List<ItemDto> itemList=showAllItems(distanceValue);
+			 for(ItemDto i:itemList) {
+				 if(i.getItemName().equalsIgnoreCase(itemName)) {
+					 sendingItemList.add(i);
+				 }
+			 }
+		 }
+		 return sendingItemList;
 	 }
 	 
 	 public boolean updateCurrentGeolocation(CoordinatesDto coordinatesDto) {

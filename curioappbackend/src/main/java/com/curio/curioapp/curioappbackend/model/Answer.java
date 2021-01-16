@@ -2,12 +2,16 @@ package com.curio.curioapp.curioappbackend.model;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -25,6 +29,8 @@ public class Answer {
 	private User answeredUser;
 	@Column(name = "answeredTimeStamp")
 	private String answeredTimeStamp;
+	@OneToMany(mappedBy = "answer")
+	private List<AnswerReply> asnwerReplies = new ArrayList<>();
 	
 	public long getAnswerId() {
 		return answerId;
@@ -55,6 +61,12 @@ public class Answer {
 	}
 	public void setAnsweredTimeStamp(String answeredTimeStamp) {
 		this.answeredTimeStamp = answeredTimeStamp;
+	}
+	public List<AnswerReply> getAsnwerReplies() {
+		return asnwerReplies;
+	}
+	public void setAsnwerReplies(List<AnswerReply> asnwerReplies) {
+		this.asnwerReplies = asnwerReplies;
 	}
 	
 	

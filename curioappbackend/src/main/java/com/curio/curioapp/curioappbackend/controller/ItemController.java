@@ -41,6 +41,11 @@ public class ItemController {
 		return new ResponseEntity<>(itemService.showAllItems(distanceValue),HttpStatus.OK);
 	}
 	
+	@GetMapping("/item/{itemId}")
+	public ResponseEntity<List<ItemDto>> getItemInfo(@PathVariable long itemId){
+		return new ResponseEntity<>(itemService.getItemInfo(itemId),HttpStatus.OK);
+	}
+	
 	@GetMapping("/myitems")
 	public ResponseEntity<List<ItemDto>> showMyItems(){
 		return new ResponseEntity<>(itemService.showMyItems(),HttpStatus.OK);

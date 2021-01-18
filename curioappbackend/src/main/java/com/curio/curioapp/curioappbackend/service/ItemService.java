@@ -106,12 +106,39 @@ public class ItemService {
 			}
 		}
 		for(Item i:sendingItemList) {
-			if(!i.getType().equals("This items was removed")) {
+			if(!i.getType().equals("This items is not available")) {
 				sendToClient.add(i);
 			}
 		}
 		return sendToClient.stream().map(this::mapFromItemToDto).collect(Collectors.toList());
 	}
+	
+	
+	public List<ItemDto> getItemInfo(long itemId){
+		 System.out.println(itemId);
+		 com.curio.curioapp.curioappbackend.model.User user= getCurrentlyLoggedInUser();
+		 List<Item> items=new ArrayList<>();
+		 Item item=null;
+		 if(user!=null) {
+			 item = itemRepository.findById(itemId).get();
+			 items.add(0, item);
+		 }
+		 
+		 long i=1;
+		 while(i<5) {
+			 Optional<Item> nextItem= itemRepository.findById(item.getItemId()+i);
+			 if(nextItem.isPresent()) {
+				Item retrived=(Item)nextItem.get(); 
+				if(retrived.getType().equalsIgnoreCase(item.getType()) && (!retrived.getPostedUser().equals(user)) && !user.getInquiredItems().contains(retrived)) {
+				 items.add(retrived);
+				}
+				
+			 }
+			 i++;
+		 }
+		 return items.stream().map(this::mapFromItemToDto).collect(Collectors.toList());
+	}
+	
 	
 	public List<ItemDto> showMyItems(){
 		User username = authservice.getCurrentUser().orElseThrow(()->
@@ -124,7 +151,7 @@ public class ItemService {
 			com.curio.curioapp.curioappbackend.model.User user= optionalUser.get();
 		    myItems = itemRepository.findByPostedUser(user);
 		    for(Item i:myItems) {
-		    	if(!i.getType().equals("This items was removed")) {
+		    	if(!i.getType().equals("This items is not available")) {
 		    		sendingItemsList.add(i);
 		    	}
 		    }
@@ -290,7 +317,7 @@ public class ItemService {
 			 item.setItemName("");
 			 item.setDescription("");
 			 item.setPostedTimeStamp("");
-			 item.setType("This items was removed");
+			 item.setType("This items is not available");
 			 
 			 
 			 itemRepository.save(item);

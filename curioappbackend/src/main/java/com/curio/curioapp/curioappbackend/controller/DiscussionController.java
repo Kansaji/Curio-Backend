@@ -42,6 +42,11 @@ public class DiscussionController {
 		return new ResponseEntity<>(discussionService.showAllQuestions(),HttpStatus.OK);	
 	}
 	
+	@GetMapping("/allquestions/{search}")
+	public ResponseEntity<List<QuestionDto>> searchQuestion(@PathVariable String search) {
+		return new ResponseEntity<>(discussionService.searchQuestion(search),HttpStatus.OK);	
+	}
+	
 	@GetMapping("/myquestions")
 	public ResponseEntity<List<QuestionDto>> showMyQuestions() {
 		return new ResponseEntity<>(discussionService.showMyQuestions(),HttpStatus.OK);	

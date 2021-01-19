@@ -65,6 +65,24 @@ public class DiscussionService {
 		return sendingQuestions.stream().map(this::mapFromQuestionToDto).collect(Collectors.toList());
 	}
 	
+	public List<QuestionDto> searchQuestion(String search){
+		com.curio.curioapp.curioappbackend.model.User user = getCurrentlyLoggedInUser();
+		List<Question> sendingQuestions=new ArrayList<>();
+		if(user!=null) {
+			List<Question>questions=questionRepository.findAll();
+			for(Question q: questions) {
+				int editDist= calcEditDist(q.getSubject(),search,q.getSubject().length(),search.length());
+				if(editDist<3) {
+					sendingQuestions.add(q);
+				}
+				
+			}
+			
+		}
+		return sendingQuestions.stream().map(this::mapFromQuestionToDto).collect(Collectors.toList());
+		
+	}
+	
 	public List<QuestionDto> showMyQuestions(){
 		com.curio.curioapp.curioappbackend.model.User user = getCurrentlyLoggedInUser();
 		List<Question> questions=null;
@@ -142,6 +160,8 @@ public class DiscussionService {
 		return answerReplies.stream().map(this::mapFromAnswerReplyToDto).collect(Collectors.toList());
 	}
 	
+	
+	
 	private QuestionDto mapFromQuestionToDto(Question question) {
 		QuestionDto questionDto = new QuestionDto();
 		questionDto.setQuestionId(question.getQuestionId());
@@ -191,5 +211,33 @@ public class DiscussionService {
 			user= optionalUser.get();
 		}
 		return user;
+	}
+	
+	
+	
+	private int calcEditDist(String str1, String str2, int m, int n) {
+		if(m==0) {
+			return n;
+		}
+		if(n==0) {
+			return m;
+		}
+		
+		if(str1.charAt(m-1)== str2.charAt(n-1)) {
+			return calcEditDist(str1,str2,m-1,n-1);
+		}
+		return 1 + getMin(calcEditDist(str1,str2,m,n-1), calcEditDist(str1,str2,m-1,n), calcEditDist(str1,str2,m-1,n-1));
+	}
+	
+	private int getMin(int a, int b ,int c) {
+		if(a<=b && a<=c) {
+			return a;
+		}
+		if(b<=a && b<=c) {
+			return b;
+		}
+		else {
+			return c;
+		}
 	}
 }

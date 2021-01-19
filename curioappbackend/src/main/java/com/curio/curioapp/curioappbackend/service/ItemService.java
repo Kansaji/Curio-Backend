@@ -173,7 +173,7 @@ public class ItemService {
 			
 			if(optionalItem!=null) {
 				Item item = optionalItem.get();
-				if (item.getPostedUser()!= user) {
+				if (!item.getPostedUser().equals(user) && !user.getInquiredItems().contains(item)) {
 					Item addInquiredItem = new Item();
 					addInquiredItem.setItemId(addToInquiredItemsRequest.getItemId());
 					addInquiredItem.setItemName(item.getItemName());
@@ -332,7 +332,8 @@ public class ItemService {
 		 if(user!=null) {
 			 List<ItemDto> itemList=showAllItems(distanceValue);
 			 for(ItemDto i:itemList) {
-				 if(i.getPostedUser().equalsIgnoreCase(username) ){
+				 int editDist = calcEditDist(i.getPostedUser(), username, i.getPostedUser().length(), username.length());
+				 if(editDist < 4 ){
 					 sendingItemList.add(i);
 				 }
 			 }
@@ -346,7 +347,8 @@ public class ItemService {
 		 if(user!=null) {
 			 List<ItemDto> itemList=showAllItems(distanceValue);
 			 for(ItemDto i:itemList) {
-				 if(i.getType().equalsIgnoreCase(type)) {
+				 int editDist = calcEditDist(i.getType(), type, i.getType().length(), type.length());
+				 if(editDist<3) {
 					 sendingItemList.add(i);
 				 }
 			 }
@@ -361,7 +363,8 @@ public class ItemService {
 		 if(user!=null) {
 			 List<ItemDto> itemList=showAllItems(distanceValue);
 			 for(ItemDto i:itemList) {
-				 if(i.getItemName().equalsIgnoreCase(itemName)) {
+				 int editDist = calcEditDist(i.getItemName(), itemName, i.getItemName().length(), itemName.length());
+				 if(editDist<4) {
 					 sendingItemList.add(i);
 				 }
 			 }
@@ -461,5 +464,31 @@ public class ItemService {
 		return (c*r);
 		
 		
+	}
+	
+	private int calcEditDist(String str1, String str2, int m, int n) {
+		if(m==0) {
+			return n;
+		}
+		if(n==0) {
+			return m;
+		}
+		
+		if(str1.charAt(m-1)== str2.charAt(n-1)) {
+			return calcEditDist(str1,str2,m-1,n-1);
+		}
+		return 1 + getMin(calcEditDist(str1,str2,m,n-1), calcEditDist(str1,str2,m-1,n), calcEditDist(str1,str2,m-1,n-1));
+	}
+	
+	private int getMin(int a, int b ,int c) {
+		if(a<=b && a<=c) {
+			return a;
+		}
+		if(b<=a && b<=c) {
+			return b;
+		}
+		else {
+			return c;
+		}
 	}
 }

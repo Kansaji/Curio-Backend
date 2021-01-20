@@ -348,7 +348,7 @@ public class ItemService {
 			 List<ItemDto> itemList=showAllItems(distanceValue);
 			 for(ItemDto i:itemList) {
 				 int editDist = calcEditDist(i.getType(), type, i.getType().length(), type.length());
-				 if(editDist<3) {
+				 if(editDist<3 && i.getType().equalsIgnoreCase("This items is not available")) {
 					 sendingItemList.add(i);
 				 }
 			 }

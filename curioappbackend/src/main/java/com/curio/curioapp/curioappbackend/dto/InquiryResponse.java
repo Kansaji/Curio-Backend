@@ -3,6 +3,7 @@ package com.curio.curioapp.curioappbackend.dto;
 
 
 public class InquiryResponse {
+	private long inquiryId;
 	private String from;
 	private String to;
 	private long itemId;
@@ -38,6 +39,12 @@ public class InquiryResponse {
 	}
 	public void setTimeStamp(String timeStamp) {
 		this.timeStamp = timeStamp;
+	}
+	public long getInquiryId() {
+		return inquiryId;
+	}
+	public void setInquiryId(long inquiryId) {
+		this.inquiryId = inquiryId;
 	}
 	
 	

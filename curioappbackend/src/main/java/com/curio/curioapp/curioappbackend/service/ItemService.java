@@ -290,6 +290,26 @@ public class ItemService {
 		return made;
 	}
 	
+	public Boolean removeInquiry(long inquiryId) {
+		 boolean removed=false;
+		 com.curio.curioapp.curioappbackend.model.User user= getCurrentlyLoggedInUser();
+		 
+		 if(user!=null ) {
+			Optional<Inquiry> inquiryFound = inquiryRepository.findById(inquiryId);
+			if(inquiryFound.isPresent()) {
+				inquiryRepository.deleteById(inquiryId);
+				removed=true;
+			}
+			else if(!inquiryFound.isPresent()) {
+				removed=true;
+			}
+			
+		 }
+		
+		 return removed;
+	}
+	
+	
 	 public Boolean removeFromWishlist(long itemId) {
 		 boolean removed=false;
 		 com.curio.curioapp.curioappbackend.model.User user= getCurrentlyLoggedInUser();
@@ -435,6 +455,7 @@ public class ItemService {
 		inquiryResponse.setItemId(inquiry.getInquiredItem().getItemId());
 		inquiryResponse.setMessage(inquiry.getMessageContent());
 		inquiryResponse.setTimeStamp(inquiry.getInquiredTimeStamp());
+		inquiryResponse.setInquiryId(inquiry.getInquiryId());
 		return inquiryResponse;
 	}
 

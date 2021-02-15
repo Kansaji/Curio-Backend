@@ -37,6 +37,7 @@ public class DiscussionController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
+	
 	@GetMapping("/allquestions")
 	public ResponseEntity<List<QuestionDto>> showAllQuestions() {
 		return new ResponseEntity<>(discussionService.showAllQuestions(),HttpStatus.OK);	

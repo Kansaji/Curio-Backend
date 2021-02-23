@@ -15,7 +15,7 @@ import com.curio.curioapp.curioappbackend.dto.AdvertisementDto;
 import com.curio.curioapp.curioappbackend.service.AdvertisementService;
 
 @RestController
-@RequestMapping("/api/ads/")
+@RequestMapping("/api/donationrequests/")
 public class AdvertisementController {
 	
 	@Autowired
@@ -34,7 +34,7 @@ public class AdvertisementController {
 		}
 	}
 	
-	@GetMapping("/allads")
+	@GetMapping("/alldonationrequests")
 	public ResponseEntity<List<AdvertisementDto>> showAllAdvertisements() {
 		return new ResponseEntity<>(advertisementService.showAllAdvertisements(),HttpStatus.OK);	
 	}

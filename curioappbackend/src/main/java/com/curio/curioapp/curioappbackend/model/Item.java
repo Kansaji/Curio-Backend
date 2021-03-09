@@ -51,6 +51,16 @@ public class Item {
 	@ManyToMany(mappedBy="inquiredItems",fetch=FetchType.LAZY)
 	private List<User> inquiredUsers = new ArrayList<>();
 	
+	@Column(name = "sale")
+	private String sale;
+	@Column(name = "donation")
+	private String donation;
+	@Column(name = "exchange")
+	private String exchange;
+	@Column(name = "renting")
+	private String renting;
+	
+	
 	public long getItemId() {
 		return itemId;
 	}
@@ -128,6 +138,30 @@ public class Item {
 	}
 	public void setInquiredUsers(List<User> inquiredUsers) {
 		this.inquiredUsers = inquiredUsers;
+	}
+	public String getSale() {
+		return sale;
+	}
+	public void setSale(String sale) {
+		this.sale = sale;
+	}
+	public String getDonation() {
+		return donation;
+	}
+	public void setDonation(String donation) {
+		this.donation = donation;
+	}
+	public String getExchange() {
+		return exchange;
+	}
+	public void setExchange(String exchange) {
+		this.exchange = exchange;
+	}
+	public String getRenting() {
+		return renting;
+	}
+	public void setRenting(String renting) {
+		this.renting = renting;
 	}
 	
 	

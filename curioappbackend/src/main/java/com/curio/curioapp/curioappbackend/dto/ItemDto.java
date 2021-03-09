@@ -15,6 +15,12 @@ public class ItemDto {
 	private int inquiredUsers;
 	private int inquiries;
 	
+	private String sale;
+	private String donation;
+	private String exchange;
+	private String renting;
+	
+	
 	public long getItemId() {
 		return itemId;
 	}
@@ -81,6 +87,30 @@ public class ItemDto {
 	}
 	public void setInquiries(int inquiries) {
 		this.inquiries = inquiries;
+	}
+	public String getSale() {
+		return sale;
+	}
+	public void setSale(String sale) {
+		this.sale = sale;
+	}
+	public String getDonation() {
+		return donation;
+	}
+	public void setDonation(String donation) {
+		this.donation = donation;
+	}
+	public String getExchange() {
+		return exchange;
+	}
+	public void setExchange(String exchange) {
+		this.exchange = exchange;
+	}
+	public String getRenting() {
+		return renting;
+	}
+	public void setRenting(String renting) {
+		this.renting = renting;
 	}
 	
 	

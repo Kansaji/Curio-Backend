@@ -54,6 +54,32 @@ public class ItemService {
 			com.curio.curioapp.curioappbackend.model.User user= optionalUser.get(); 
 			item.setPostedUser(user);
 			
+			if(itemDto.getSale().equalsIgnoreCase("true")) {
+				item.setSale("Sale");
+			}
+			if(!itemDto.getSale().equalsIgnoreCase("true")) {
+				item.setSale("");
+			}
+			
+			if(itemDto.getDonation().equalsIgnoreCase("true")) {
+				item.setDonation("Donation");
+			}
+			if(!itemDto.getDonation().equalsIgnoreCase("true")) {
+				item.setDonation("");
+			}
+			if(itemDto.getExchange().equalsIgnoreCase("true")) {
+				item.setExchange("Exchange");
+			}
+			if(!itemDto.getExchange().equalsIgnoreCase("true")) {
+				item.setExchange("");
+			}
+			if(itemDto.getRenting().equalsIgnoreCase("true")) {
+				item.setRenting("Renting");
+			}
+			if(!itemDto.getRenting().equalsIgnoreCase("true")) {
+				item.setRenting("");
+			}
+			
 			itemRepository.save(item);
 			
 		}
@@ -444,6 +470,11 @@ public class ItemService {
 		
 		itemDto.setInquiries(inquiries);
 		itemDto.setInquiredUsers(inquiredUsers);
+		
+		itemDto.setSale(item.getSale());
+		itemDto.setDonation(item.getDonation());
+		itemDto.setExchange(item.getExchange());
+		itemDto.setRenting(item.getRenting());
 		
 		return itemDto;
 	}

@@ -48,6 +48,7 @@ public class ItemService {
 			item.setType(itemDto.getType());
 			item.setPostedTimeStamp(itemDto.getPostedTimeStamp());
 			item.setDescription(itemDto.getDescription());
+			item.setQuality(itemDto.getQuality());
 			byte[] decodedByte = Base64.getEncoder().encode(itemDto.getPhoto().getBytes());
 			item.setPhoto(decodedByte);
 			Optional<com.curio.curioapp.curioappbackend.model.User> optionalUser = userRepository.findByUsername(username.getUsername());
@@ -323,7 +324,9 @@ public class ItemService {
 		 if(user!=null ) {
 			Optional<Inquiry> inquiryFound = inquiryRepository.findById(inquiryId);
 			if(inquiryFound.isPresent()) {
-				inquiryRepository.deleteById(inquiryId);
+				Inquiry inquiry=inquiryFound.get();
+				inquiry.setMessageContent("This message was deleted by "+user.getUsername()+"");
+				inquiryRepository.save(inquiry);
 				removed=true;
 			}
 			else if(!inquiryFound.isPresent()) {
@@ -450,6 +453,7 @@ public class ItemService {
 		itemDto.setItemName(item.getItemName());
 		itemDto.setType(item.getType());
 		itemDto.setDescription(item.getDescription());
+		itemDto.setQuality(item.getQuality());
 		itemDto.setPostedTimeStamp(item.getPostedTimeStamp());
 		itemDto.setSoldFlag(item.getSoldFlag());
 		byte[] decoded = Base64.getDecoder().decode(item.getPhoto());

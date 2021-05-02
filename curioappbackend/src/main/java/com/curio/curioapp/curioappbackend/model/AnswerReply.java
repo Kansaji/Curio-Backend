@@ -15,7 +15,7 @@ public class AnswerReply {
 	@Column(name = "answerReplyId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long answerReplyId;
-	@Column(name = "answerReplyContent")
+	@Column(name = "answerReplyContent" ,columnDefinition="TEXT")
 	private String answerReplyContent;
 	@Column(name = "answerReplyTimeStamp")
 	private String answerReplyTimeStamp;

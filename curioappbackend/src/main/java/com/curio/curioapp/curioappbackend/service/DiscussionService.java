@@ -72,7 +72,7 @@ public class DiscussionService {
 			List<Question>questions=questionRepository.findAll();
 			for(Question q: questions) {
 				int editDist= calcEditDist(q.getSubject(),search,q.getSubject().length(),search.length());
-				if(editDist<3) {
+				if(editDist<10) {
 					sendingQuestions.add(q);
 				}
 				
@@ -161,6 +161,87 @@ public class DiscussionService {
 	}
 	
 	
+	public boolean removeQuestion(long questionId) {
+		boolean removed=false;
+		com.curio.curioapp.curioappbackend.model.User user = getCurrentlyLoggedInUser();
+		Optional<Question> questionFound = questionRepository.findById(questionId);
+		if(questionFound.isPresent()) {
+			
+			Question question=questionFound.get();
+			com.curio.curioapp.curioappbackend.model.User postedUser=question.getQuestionedUser();
+			if(postedUser.getUserId()==user.getUserId()) {
+				
+				
+					
+				question.setQuestionContent("");
+				question.setSubject("[DELETED]");
+				questionRepository.save(question);
+				
+				removed=true;
+				
+			}
+			
+		}
+		return removed;
+	}
+	
+	public boolean removeAnswer(long answerId) {
+		boolean removed=false;
+		com.curio.curioapp.curioappbackend.model.User user = getCurrentlyLoggedInUser();
+		Optional<Answer> answerFound = answerRepository.findById(answerId);
+		if(answerFound.isPresent()) {
+			Answer answer=answerFound.get();
+			com.curio.curioapp.curioappbackend.model.User postedUser=answer.getAnsweredUser();
+			if(postedUser.getUserId()==user.getUserId()) {
+				
+				if(answer.getAsnwerReplies().size()>0) {
+					answer.setAnswerContent("[This answer was deleted by "+user.getUsername()+"]");
+					answer.setAnsweredUser(null);
+					answerRepository.save(answer);
+					removed=true;
+				}else {
+					answerRepository.deleteById(answerId);
+					removed=true;
+				}
+				
+			}
+		
+			
+			
+		}
+		
+		
+		return removed;
+	}
+	
+	public boolean removeAnswerReply(long answerReplyId) {
+		boolean removed=false;
+		com.curio.curioapp.curioappbackend.model.User user = getCurrentlyLoggedInUser();
+		Optional<AnswerReply> answerReplyFound = answerReplyRepository.findById(answerReplyId);
+		if(answerReplyFound.isPresent()) {
+		
+			AnswerReply answerReply=answerReplyFound.get();
+		
+			com.curio.curioapp.curioappbackend.model.User postedUser=answerReply.getAnswerReplyUser();
+			if(postedUser.getUserId()==user.getUserId()) {
+				Answer answer=answerReply.getAnswer();
+				answerReplyRepository.deleteById(answerReplyId);
+				removed=true;
+				if(answer.getAsnwerReplies().size()<1 && answer.getAnsweredUser()==null) {
+					long aid=answer.getAnswerId();
+					answerRepository.deleteById(aid);
+				}
+				
+			}
+			
+		
+		}
+		
+		
+		return removed;
+	}
+	
+	
 	
 	private QuestionDto mapFromQuestionToDto(Question question) {
 		QuestionDto questionDto = new QuestionDto();
@@ -168,7 +249,13 @@ public class DiscussionService {
 		questionDto.setSubject(question.getSubject());
 		questionDto.setQuestionContent(question.getQuestionContent());
 		questionDto.setQuestionedTimeStamp(question.getQuestionedTimeStamp());
-		questionDto.setAskedUsername(question.getQuestionedUser().getUsername());
+		
+		if(question.getQuestionedUser()!=null) {
+			questionDto.setAskedUsername(question.getQuestionedUser().getUsername());
+		}else {
+			questionDto.setAskedUsername("");
+		}
+		
 		questionDto.setNumOfAnswers(question.getAnswers().size());
 		System.out.println(questionDto.getSubject());
 		return questionDto;
@@ -193,6 +280,8 @@ public class DiscussionService {
 		answerDto.setAnsweredTimeStamp(answer.getAnsweredTimeStamp());
 		if(answer.getAnsweredUser()!=null) {
 			answerDto.setAnsweredUsername(answer.getAnsweredUser().getUsername());
+		}else {
+			answerDto.setAnsweredUsername("");
 		}
 		answerDto.setSubject(answer.getQuestion().getSubject());
 		System.out.println("printing subject");

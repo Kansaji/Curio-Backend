@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -22,8 +23,9 @@ public class Question {
 	private long questionId;
 	@Column(name = "subject")
 	private String subject;
-	@Column(name = "questionContent")
-	private String questionContent;
+	
+	@Column(name = "questionTextcontent", columnDefinition="TEXT")
+	private String questionTextcontent;
 	@ManyToOne
 	private User questionedUser;
 	@OneToMany(mappedBy = "question")
@@ -38,10 +40,10 @@ public class Question {
 		this.questionId = questionId;
 	}
 	public String getQuestionContent() {
-		return questionContent;
+		return questionTextcontent;
 	}
 	public void setQuestionContent(String questionContent) {
-		this.questionContent = questionContent;
+		this.questionTextcontent = questionContent;
 	}
 	public User getQuestionedUser() {
 		return questionedUser;

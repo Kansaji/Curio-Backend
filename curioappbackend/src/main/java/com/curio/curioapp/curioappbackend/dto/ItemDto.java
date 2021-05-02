@@ -19,7 +19,7 @@ public class ItemDto {
 	private String donation;
 	private String exchange;
 	private String renting;
-	
+	private String quality;
 	
 	public long getItemId() {
 		return itemId;
@@ -111,6 +111,12 @@ public class ItemDto {
 	}
 	public void setRenting(String renting) {
 		this.renting = renting;
+	}
+	public String getQuality() {
+		return quality;
+	}
+	public void setQuality(String quality) {
+		this.quality = quality;
 	}
 	
 	

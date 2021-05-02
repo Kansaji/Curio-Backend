@@ -89,4 +89,45 @@ public class DiscussionController {
 		return new ResponseEntity<>(discussionService.showAnswerReplies(answerId),HttpStatus.OK);	
 	}
 	
+	@PostMapping("/removequestion/{questionId}")
+	public ResponseEntity<?> removeQuestion(@PathVariable long questionId){
+		boolean removed=false;
+		
+		removed = discussionService.removeQuestion(questionId);
+		if(removed) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PostMapping("/removeanswer/{answerId}")
+	public ResponseEntity<?> removeAnswer(@PathVariable long answerId){
+		boolean removed=false;
+		
+		removed = discussionService.removeAnswer(answerId);
+		if(removed) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PostMapping("/removeanswerreply/{answerReplyId}")
+	public ResponseEntity<?> removeAnswerReply(@PathVariable long answerReplyId){
+		boolean removed=false;
+		
+		removed = discussionService.removeAnswerReply(answerReplyId);
+		if(removed) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	
+	
 }

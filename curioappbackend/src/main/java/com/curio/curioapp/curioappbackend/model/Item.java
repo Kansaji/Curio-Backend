@@ -29,10 +29,12 @@ public class Item {
 	private String itemName;
 	@Column(name = "type")
 	private String type;
-	@Column(name = "description")
+	@Lob
+	@Column(name = "description", columnDefinition="TEXT")
 	private String description;
 	@Lob
 	@Basic(fetch=FetchType.LAZY)
+	@Column(name="photo" , columnDefinition="MEDIUMBLOB")
 	private byte[] photo;
 	@ManyToOne
 	private User postedUser;
@@ -59,6 +61,9 @@ public class Item {
 	private String exchange;
 	@Column(name = "renting")
 	private String renting;
+	
+	@Column(name = "quality")
+	private String quality;
 	
 	
 	public long getItemId() {
@@ -162,6 +167,12 @@ public class Item {
 	}
 	public void setRenting(String renting) {
 		this.renting = renting;
+	}
+	public String getQuality() {
+		return quality;
+	}
+	public void setQuality(String quality) {
+		this.quality = quality;
 	}
 	
 	

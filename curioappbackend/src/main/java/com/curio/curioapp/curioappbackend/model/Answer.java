@@ -21,8 +21,8 @@ public class Answer {
 	@Column(name = "answerId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long answerId;
-	@Column(name = "answerContent")
-	private String answerContent;
+	@Column(name = "answerTextContent", columnDefinition="TEXT")
+	private String answerTextContent;
 	@ManyToOne
 	private Question question;
 	@ManyToOne
@@ -39,10 +39,10 @@ public class Answer {
 		this.answerId = answerId;
 	}
 	public String getAnswerContent() {
-		return answerContent;
+		return answerTextContent;
 	}
 	public void setAnswerContent(String answerContent) {
-		this.answerContent = answerContent;
+		this.answerTextContent = answerContent;
 	}
 	public Question getQuestion() {
 		return question;

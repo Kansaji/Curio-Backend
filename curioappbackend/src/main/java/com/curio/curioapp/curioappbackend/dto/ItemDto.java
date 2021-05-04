@@ -21,6 +21,8 @@ public class ItemDto {
 	private String renting;
 	private String quality;
 	
+	private long likes;
+	
 	public long getItemId() {
 		return itemId;
 	}
@@ -118,6 +120,13 @@ public class ItemDto {
 	public void setQuality(String quality) {
 		this.quality = quality;
 	}
+	public long getLikes() {
+		return likes;
+	}
+	public void setLikes(long likes) {
+		this.likes = likes;
+	}
+	
 	
 	
 	

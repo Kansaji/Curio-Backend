@@ -55,7 +55,7 @@ public class DiscussionService {
 		if(user!=null) {
 			List<Question>questions=questionRepository.findAll();
 			for(Question q: questions) {
-				if(!q.getQuestionedUser().equals(user)) {
+				if(!q.getQuestionedUser().equals(user) && !(q.getQuestionContent().equals(""))) {
 					sendingQuestions.add(q);
 				}
 				
@@ -172,9 +172,9 @@ public class DiscussionService {
 			if(postedUser.getUserId()==user.getUserId()) {
 				
 				
-					
+				String subject=question.getSubject();
 				question.setQuestionContent("");
-				question.setSubject("[DELETED]");
+				question.setSubject("[DELETED] "+ subject);
 				questionRepository.save(question);
 				
 				removed=true;

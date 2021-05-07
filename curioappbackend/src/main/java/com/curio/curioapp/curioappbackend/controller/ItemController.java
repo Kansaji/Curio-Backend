@@ -166,4 +166,16 @@ public class ItemController {
 	public ResponseEntity<List<ItemDto>> getItemsByitemname(@PathVariable int distanceValue, @PathVariable String itemName ) {
 		return new ResponseEntity<>(itemService.getItemsByItemName(distanceValue, itemName),HttpStatus.OK);
 	}
+	
+	@PutMapping("/setsoldflag/{itemId}/{flag}")
+	public ResponseEntity<?> setSoldFlag(@PathVariable long itemId, @PathVariable String flag){
+		boolean set=itemService.setSoldFlag(itemId, flag);
+		if(set) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+		}
+		
+	}
 }

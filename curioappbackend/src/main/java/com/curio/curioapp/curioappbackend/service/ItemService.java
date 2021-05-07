@@ -80,7 +80,7 @@ public class ItemService {
 			if(!itemDto.getRenting().equalsIgnoreCase("true")) {
 				item.setRenting("");
 			}
-			
+			item.setSoldFlag("Available");
 			
 			itemRepository.save(item);
 			
@@ -134,7 +134,7 @@ public class ItemService {
 			}
 		}
 		for(Item i:sendingItemList) {
-			if(!i.getType().equals("This items is not available")) {
+			if(!i.getType().equals("This items is not available") && i.getSoldFlag().equals("Available")) {
 				sendToClient.add(i);
 			}
 		}
@@ -157,7 +157,7 @@ public class ItemService {
 			 Optional<Item> nextItem= itemRepository.findById(item.getItemId()+i);
 			 if(nextItem.isPresent()) {
 				Item retrived=(Item)nextItem.get(); 
-				if(retrived.getType().equalsIgnoreCase(item.getType()) && (!retrived.getPostedUser().equals(user)) && !user.getInquiredItems().contains(retrived)) {
+				if(retrived.getType().equalsIgnoreCase(item.getType()) && (!retrived.getPostedUser().equals(user)) && !user.getInquiredItems().contains(retrived) && (!retrived.getType().equalsIgnoreCase("This items is not available")) && retrived.getSoldFlag().equalsIgnoreCase("Available")) {
 				 items.add(retrived);
 				}
 				
@@ -394,7 +394,7 @@ public class ItemService {
 			 List<ItemDto> itemList=showAllItems(distanceValue);
 			 for(ItemDto i:itemList) {
 				 int editDist = calcEditDist(i.getPostedUser(), username, i.getPostedUser().length(), username.length());
-				 if(editDist < 4 ){
+				 if(editDist < 3 ){
 					 sendingItemList.add(i);
 				 }
 			 }
@@ -409,7 +409,7 @@ public class ItemService {
 			 List<ItemDto> itemList=showAllItems(distanceValue);
 			 for(ItemDto i:itemList) {
 				 int editDist = calcEditDist(i.getType(), type, i.getType().length(), type.length());
-				 if(editDist<3 && !(i.getType().equalsIgnoreCase("This items is not available"))) {
+				 if(editDist<2 && !(i.getType().equalsIgnoreCase("This items is not available"))) {
 					 sendingItemList.add(i);
 				 }
 			 }
@@ -425,12 +425,30 @@ public class ItemService {
 			 List<ItemDto> itemList=showAllItems(distanceValue);
 			 for(ItemDto i:itemList) {
 				 int editDist = calcEditDist(i.getItemName(), itemName, i.getItemName().length(), itemName.length());
-				 if(editDist<4) {
+				 if(editDist<3) {
 					 sendingItemList.add(i);
 				 }
 			 }
 		 }
 		 return sendingItemList;
+	 }
+	 
+	 
+	 public boolean setSoldFlag(long itemId, String flag) {
+		 boolean set=false;
+		 com.curio.curioapp.curioappbackend.model.User user=getCurrentlyLoggedInUser();
+		 if(user!=null) {
+			 Optional<Item> itemFound = itemRepository.findById(itemId);
+			 if(itemFound.isPresent()) {
+				 Item item=itemFound.get();
+				 item.setSoldFlag(flag);
+				 itemRepository.save(item);
+				 set=true;
+			 }
+		 }
+		 
+		 return set;
+		 
 	 }
 	 
 	 public boolean updateCurrentGeolocation(CoordinatesDto coordinatesDto) {

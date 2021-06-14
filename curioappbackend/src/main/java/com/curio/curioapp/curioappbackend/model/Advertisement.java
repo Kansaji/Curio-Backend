@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -19,14 +20,17 @@ public class Advertisement {
 	private String organization;
 	@Column(name = "subject")
 	private String subject;
-	@Column(name = "description")
+	@Column(name = "description", columnDefinition="TEXT")
 	private String description;
-	@Column(name = "contactDetails")
+	@Column(name = "contactDetails", columnDefinition="TEXT")
 	private String contactDetails;
 	@Column(name = "expiryDate")
 	private String expiryDate;
 	@Column(name = "postedDate")
     private String postedDate;
+	
+	@ManyToOne
+    private User advertisementPostedUser;
 	
 	
 	public long getAdvertisementId() {
@@ -70,6 +74,12 @@ public class Advertisement {
 	}
 	public void setPostedDate(String postedDate) {
 		this.postedDate = postedDate;
+	}
+	public User getAdvertisementPostedUser() {
+		return advertisementPostedUser;
+	}
+	public void setAdvertisementPostedUser(User advertisementPostedUser) {
+		this.advertisementPostedUser = advertisementPostedUser;
 	}
 	
 	

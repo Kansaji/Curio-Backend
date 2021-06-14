@@ -39,7 +39,6 @@ public class AuthService {
 			user.setUsername(registerRequest.getUsername());
 			user.setPassword(encodePassword(registerRequest.getPassword()));
 			user.setEmail(registerRequest.getEmail());
-			user.setCity(registerRequest.getCity());
 			userRepository.save(user);
 			return true;
 		}

@@ -7,21 +7,27 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import com.curio.curioapp.curioappbackend.dto.AdvertisementDto;
 import com.curio.curioapp.curioappbackend.model.Advertisement;
 import com.curio.curioapp.curioappbackend.repository.AdvertisementRepository;
+import com.curio.curioapp.curioappbackend.repository.UserRepository;
 
 @Service
 public class AdvertisementService {
 
 	@Autowired
 	private AdvertisementRepository advertisementRepository;
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired
+	private AuthService authservice;
 	
 	public boolean postAdvertisement(AdvertisementDto advertisementDto) {
 		boolean posted=false;
@@ -33,7 +39,16 @@ public class AdvertisementService {
 		advertisement.setSubject(advertisementDto.getSubject());
 		advertisement.setExpiryDate(advertisementDto.getExpiryDate());
 		advertisement.setPostedDate(advertisementDto.getPostedDate());
+		com.curio.curioapp.curioappbackend.model.User user = getCurrentlyLoggedInUser();
+		if(user!=null) {
+			advertisement.setAdvertisementPostedUser(user);
+		}
+		
+		
 		Advertisement saved = advertisementRepository.save(advertisement);
+		
+		
+		
 	
 		if(saved!=null) {
 			posted=true;
@@ -71,7 +86,7 @@ public class AdvertisementService {
 		advertisementDto.setSubject(advertisement.getSubject());
 		advertisementDto.setPostedDate(advertisement.getPostedDate());
 		advertisementDto.setExpiryDate(advertisement.getExpiryDate());
-		
+		advertisementDto.setPostedUser(advertisement.getAdvertisementPostedUser().getUsername());
 		return advertisementDto;
 	}
 	
@@ -104,5 +119,17 @@ public class AdvertisementService {
 		
 		return expired;
 		
+	}
+	
+	
+	private com.curio.curioapp.curioappbackend.model.User getCurrentlyLoggedInUser() {
+		com.curio.curioapp.curioappbackend.model.User user=null;
+		User username = authservice.getCurrentUser().orElseThrow(()->
+		new IllegalArgumentException("No user logged in"));
+		if(username!=null) {
+			Optional<com.curio.curioapp.curioappbackend.model.User> optionalUser = userRepository.findByUsername(username.getUsername());
+			user= optionalUser.get();
+		}
+		return user;
 	}
 }

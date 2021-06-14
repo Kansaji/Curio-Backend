@@ -28,8 +28,6 @@ public class User {
 	private String password;
 	@Column(name = "email")
 	private String email;
-	@Column(name = "city")
-	private String city;
 	@OneToMany(mappedBy = "postedUser")
 	private List<Item> postedItems = new ArrayList<>();
 	@OneToMany(mappedBy = "boughtUser")
@@ -53,6 +51,9 @@ public class User {
 	private double latitude;
 	@OneToMany(mappedBy="answerReplyUser")
 	private List<AnswerReply>  answerReplies;
+	
+	@OneToMany(mappedBy="advertisementPostedUser")
+	private List<Advertisement>  advertisements;
 	
 	public long getUserId() {
 		return userId;
@@ -78,12 +79,7 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getCity() {
-		return city;
-	}
-	public void setCity(String city) {
-		this.city = city;
-	}
+	
 	public List<Item> getPostedItems() {
 		return postedItems;
 	}
@@ -137,6 +133,12 @@ public class User {
 	}
 	public void setAnswerReplies(List<AnswerReply> answerReplies) {
 		this.answerReplies = answerReplies;
+	}
+	public List<Advertisement> getAdvertisements() {
+		return advertisements;
+	}
+	public void setAdvertisements(List<Advertisement> advertisements) {
+		this.advertisements = advertisements;
 	}
 	
 	

@@ -11,6 +11,7 @@ public class AdvertisementDto {
 	private String subject;
 	private String expiryDate;
     private String postedDate;
+    private String postedUser;
 	
 	public long getAdvertisementId() {
 		return advertisementId;
@@ -53,6 +54,12 @@ public class AdvertisementDto {
 	}
 	public void setPostedDate(String postedDate) {
 		this.postedDate = postedDate;
+	}
+	public String getPostedUser() {
+		return postedUser;
+	}
+	public void setPostedUser(String postedUser) {
+		this.postedUser = postedUser;
 	}
 	
 	

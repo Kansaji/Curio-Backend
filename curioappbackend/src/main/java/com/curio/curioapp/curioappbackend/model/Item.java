@@ -15,7 +15,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -44,10 +43,10 @@ public class Item {
 	private User boughtUser;	
 	@Column(name = "soldFlag")
 	private String soldFlag;
-	@OneToOne(mappedBy = "item")
-	private Toy toy;
-	@OneToOne(mappedBy = "item")
-	private Gear gear;
+
+	
+	
+	
 	@OneToMany(mappedBy = "inquiredItem")
 	private List<Inquiry>inquiries = new ArrayList<>();
 	@ManyToMany(mappedBy="inquiredItems",fetch=FetchType.LAZY)
@@ -120,18 +119,8 @@ public class Item {
 	public void setSoldFlag(String soldFlag) {
 		this.soldFlag = soldFlag;
 	}
-	public Toy getToy() {
-		return toy;
-	}
-	public void setToy(Toy toy) {
-		this.toy = toy;
-	}
-	public Gear getGear() {
-		return gear;
-	}
-	public void setGear(Gear gear) {
-		this.gear = gear;
-	}
+	
+	
 	public List<Inquiry> getInquiries() {
 		return inquiries;
 	}

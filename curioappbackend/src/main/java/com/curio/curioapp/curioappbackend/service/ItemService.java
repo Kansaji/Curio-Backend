@@ -394,7 +394,7 @@ public class ItemService {
 			 List<ItemDto> itemList=showAllItems(distanceValue);
 			 for(ItemDto i:itemList) {
 				 int editDist = calcEditDist(i.getPostedUser(), username, i.getPostedUser().length(), username.length());
-				 if(editDist < 3 ){
+				 if((editDist < 3 || i.getPostedUser().contains(username)) && !(i.getType().equalsIgnoreCase("This items is not available")) ){
 					 sendingItemList.add(i);
 				 }
 			 }
@@ -409,7 +409,7 @@ public class ItemService {
 			 List<ItemDto> itemList=showAllItems(distanceValue);
 			 for(ItemDto i:itemList) {
 				 int editDist = calcEditDist(i.getType(), type, i.getType().length(), type.length());
-				 if(editDist<2 && !(i.getType().equalsIgnoreCase("This items is not available"))) {
+				 if(editDist<2  && !(i.getType().equalsIgnoreCase("This items is not available"))) {
 					 sendingItemList.add(i);
 				 }
 			 }
@@ -425,7 +425,7 @@ public class ItemService {
 			 List<ItemDto> itemList=showAllItems(distanceValue);
 			 for(ItemDto i:itemList) {
 				 int editDist = calcEditDist(i.getItemName(), itemName, i.getItemName().length(), itemName.length());
-				 if(editDist<3) {
+				 if((editDist<3 || i.getItemName().contains(itemName)) && !(i.getType().equalsIgnoreCase("This items is not available"))) {
 					 sendingItemList.add(i);
 				 }
 			 }
